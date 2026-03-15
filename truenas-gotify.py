@@ -34,17 +34,19 @@ routes = web.RouteTableDef()
 @routes.post("/message")
 async def on_message(request):
     content = await request.json()
+    priority = request.query.get("priority")
     # The content of the alert message
     message = content["text"].strip().partition("\n")
     # Extract notification title from the message
     title = message[0].strip()
     message = message[2].strip()
-    print(f"========== {title} ==========")
+    print(f"========== {title} (priority: {priority}) ==========")
     print(message)
     print(f"{len(title) * '='}======================")
+    # Fetch priority from GET parameters
 
     # Forward the alert to gotify
-    gotify_resp = await send_gotify_message(message, GOTIFY_TOKEN, title=title)
+    gotify_resp = await send_gotify_message(message, GOTIFY_TOKEN, title=title, priority=priority)
 
     # Check for http reponse status code 'success'
     if gotify_resp.status == 200:
@@ -68,7 +70,7 @@ async def send_gotify_message(message, token, title=None, priority=None):
     if title:
         json["title"] = title
     if priority:
-        json["priority"] = priority
+        json["priority"] = int(priority)
 
     async with ClientSession() as session:
         async with session.post(GOTIFY_BASEURL, headers=headers, json=json, ssl=VERIFY_CERT) as resp:
