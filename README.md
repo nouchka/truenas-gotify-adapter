@@ -35,6 +35,6 @@ services:
 
 1. System -> Alert Settings -> Add
     - _Type_: Slack
-    - _Webhook URL_: http://localhost:31662
+    - _Webhook URL_: http://localhost:31662?priority=10
     - Click _Send Test Alert_ to test the connection
     - Save
