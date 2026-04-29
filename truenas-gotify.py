@@ -29,6 +29,10 @@ VERIFY_CERT = not os.environ.get("VERIFY_CERT", "true").lower() in ("false", "no
 
 routes = web.RouteTableDef()
 
+@routes.get("/health")
+async def health(request):
+    return web.Response(text="OK")
+
 # Listen to post requests on / and /message
 @routes.post("/")
 @routes.post("/message")
